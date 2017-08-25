@@ -1,8 +1,14 @@
 import sqlite3
+import csv
 
-db=sqlite3.connect('C:\\Desarrollo_Pablo\\CHEQUEO EXTERNAS\\dbext.db')
+db=sqlite3.connect('C:\\CHEQUEO EXTERNAS\\dbext.db')
 db.text_factory = str
 cursor=db.cursor()
+
+f=open('C:\\CHEQUEO EXTERNAS\\CORRECCIONES_EXT_HUA3G_EN_RED_ERI3G.csv','wb')
+writer=csv.writer(f,delimiter=',')
+fila=['CONTROLLER DONDE SE DEFINE EXTERNA','EXTERNA','PARAMETRO','VALOR EN DEF EXTERNA','VALOR EN RED']
+writer.writerow(fila)
 
 #EXT 3G_ERI3G
 cursor.execute('''SELECT EXT_3G_ERI3G.ExternalUtranCell, EXT_3G_ERI3G.ControllerName, EXT_3G_ERI3G.ExternalUtranCellId, EXT_3G_ERI3G.ExternalUtranCellLac, EXT_3G_ERI3G.ExternalUtranCellMcc, EXT_3G_ERI3G.ExternalUtranCellMnc, EXT_3G_ERI3G.ExternalUtranCellRac, EXT_3G_ERI3G.ExternalUtranCellPrimaryScramblingCode,EXT_3G_ERI3G.Vendor,EXT_3G_ERI3G.ExternalUtranCellUarfcnDl
@@ -51,12 +57,12 @@ for celda in celdas:
 
         if externa_valida==1 and def_ext_valida==1:
 
-            if psc_ext-def_externa_hua_psc<>0: print 'PSC EN DEF EXTERNA: '+ externa_hua,str(psc_ext)+ '  PSC EN RED: '+ externa_hua, def_externa_hua_psc
-            if lac_ext - def_externa_hua_lac <> 0: print 'LAC EN DEF EXTERNA: ' + externa_hua,str(lac_ext) + '  LAC EN RED: ' + externa_hua, def_externa_hua_lac
-            if ci_ext - def_externa_hua_ci <> 0: print 'CI EN DEF EXTERNA: ' + externa_hua,str(ci_ext) + '  CI EN RED: ' + externa_hua, def_externa_hua_ci
-            if mcc_ext - def_externa_hua_mcc <> 0: print 'MCC EN DEF EXTERNA: ' + externa_hua,str(mcc_ext) + '  MCC EN RED: ' + externa_hua, def_externa_hua_mcc
-            if mnc_ext - def_externa_hua_mnc <> 0: print 'MNC EN DEF EXTERNA: ' + externa_hua,str(mnc_ext) + '  MNC EN RED: ' + externa_hua, def_externa_hua_mnc
-            if rnc_ext <> def_externa_hua_rnc: print 'RNC EN DEF EXTERNA: ' + externa_hua, str(rnc_ext) + '  RNC EN RED: ' + externa_hua, def_externa_hua_rnc
+            if psc_ext-def_externa_hua_psc<>0: writer.writerow(['',str(externa_hua),'PSC',str(psc_ext),str(def_externa_hua_psc)])
+            if lac_ext - def_externa_hua_lac <> 0: writer.writerow(['',str(externa_hua),'LAC',str(lac_ext),str(def_externa_hua_lac)])
+            if ci_ext - def_externa_hua_ci <> 0: writer.writerow(['',str(externa_hua),'CI',str(ci_ext),str(def_externa_hua_ci)])
+            if mcc_ext - def_externa_hua_mcc <> 0: writer.writerow(['',str(externa_hua),'MCC',str(mcc_ext),str(def_externa_hua_mcc)])
+            if mnc_ext - def_externa_hua_mnc <> 0: writer.writerow(['',str(externa_hua),'MNC',str(mnc_ext),str(def_externa_hua_mnc)])
+            if rnc_ext <> def_externa_hua_rnc: print writer.writerow(['',str(externa_hua),'RNC',str(rnc_ext),str(def_externa_hua_rnc)])
 
 db.commit()
 db.close()

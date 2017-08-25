@@ -1,8 +1,14 @@
 import sqlite3
+import csv
 
-db=sqlite3.connect('C:\\Desarrollo_Pablo\\CHEQUEO EXTERNAS\\dbext.db')
+db=sqlite3.connect('C:\\CHEQUEO EXTERNAS\\dbext.db')
 db.text_factory = str
 cursor=db.cursor()
+
+f=open('C:\\CHEQUEO EXTERNAS\\CORRECCIONES_EXT_ERI2G_EN_RED_ERI3G.csv','wb')
+writer=csv.writer(f,delimiter=',')
+fila=['CONTROLLER DONDE SE DEFINE EXTERNA','EXTERNA','PARAMETRO','VALOR EN DEF EXTERNA','VALOR EN RED']
+writer.writerow(fila)
 
 #EXT 2G_ERI3G
 cursor.execute('''SELECT EXT_2G_ERI3G.ExternalGsmCell, EXT_2G_ERI3G.BSC, EXT_2G_ERI3G.CellId, EXT_2G_ERI3G.LAC, EXT_2G_ERI3G.MCC, EXT_2G_ERI3G.MNC, EXT_2G_ERI3G.NCC, EXT_2G_ERI3G.BCC, EXT_2G_ERI3G.BCCH,EXT_2G_ERI3G.Vendor
@@ -16,6 +22,7 @@ for celda in celdas:
         def_ext_valida=1
         try:
             externa_eri=celda[0]
+            bsc_donde_se_define_ext = celda[1]
             ci_ext=int(celda[2])
             lac_ext=int(celda[3])
             mcc_ext=int(celda[4])
@@ -46,12 +53,15 @@ for celda in celdas:
 
         if externa_valida==1 and def_ext_valida==1:
 
-            if bcch_ext-def_externa_eri_bcch<>0: print 'BCCH EN DEF EXTERNA: '+ str(celda[0]),str(bcc_ext)+ '  BCCH EN RED: '+ externa_eri, def_externa_eri_bcch
-            if lac_ext - def_externa_eri_lac <> 0: print 'LAC EN DEF EXTERNA: ' + str(celda[0]),str(lac_ext) + '  LAC EN RED: ' + externa_eri, def_externa_eri_lac
-            if ci_ext - def_externa_eri_ci <> 0: print 'CI EN DEF EXTERNA: ' + str(celda[0]),str(ci_ext) + '  CI EN RED: ' + externa_eri, def_externa_eri_ci
-            if ncc_ext - def_externa_eri_ncc <> 0: print 'NCC EN DEF EXTERNA: ' + str(celda[0]), str(ncc_ext) + '  NCC EN RED: ' + externa_eri, def_externa_eri_ncc
-            if bcc_ext - def_externa_eri_bcc <> 0: print 'BCC EN DEF EXTERNA: ' + str(celda[0]), str(bcc_ext) + '  BCC EN RED: ' + externa_eri, def_externa_eri_bcc
-            if mcc_ext - def_externa_eri_mcc <> 0: print 'MCC EN DEF EXTERNA: ' + str(celda[0]), str(mcc_ext) + '  MCC EN RED: ' + externa_eri, def_externa_eri_mcc
-            if mnc_ext - def_externa_eri_mnc <> 0: print 'MCC EN DEF EXTERNA: ' + str(celda[0]), str(mnc_ext) + '  MNC EN RED: ' + externa_eri, def_externa_eri_mnc
+            if bcch_ext-def_externa_eri_bcch<>0: writer.writerow(['',str(externa_eri),'BCCH',str(bcch_ext),str(def_externa_eri_bcch)])
+            if lac_ext - def_externa_eri_lac <> 0: writer.writerow (['',str(externa_eri),'LAC',str(lac_ext),(def_externa_eri_lac)])
+            if ci_ext - def_externa_eri_ci <> 0: writer.writerow(['',str(externa_eri),'CI',str(ci_ext),(def_externa_eri_ci)])
+            if ncc_ext - def_externa_eri_ncc <> 0: writer.writerow(['',str(externa_eri),'NCC', str(ncc_ext), str(def_externa_eri_ncc)])
+            if bcc_ext - def_externa_eri_bcc <> 0: writer.writerow(['',str(externa_eri),'BCC', str(bcc_ext),str(def_externa_eri_bcc)])
+            if mcc_ext - def_externa_eri_mcc <> 0: writer.writerow(['',str(externa_eri),'MCC', str(mcc_ext),str(def_externa_eri_mcc)])
+            if mnc_ext - def_externa_eri_mnc <> 0: writer.writerow(['',str(externa_eri),'MNC', str(mnc_ext),str(def_externa_eri_mnc)])
+
+
+
 db.commit()
 db.close()

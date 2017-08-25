@@ -1,11 +1,18 @@
 import sqlite3
+import csv
 
-db=sqlite3.connect('C:\\Desarrollo_Pablo\\CHEQUEO EXTERNAS\\dbext.db')
+db=sqlite3.connect('C:\\CHEQUEO EXTERNAS\\dbext.db')
 db.text_factory = str
 cursor=db.cursor()
 
+f=open('C:\\CHEQUEO EXTERNAS\\CORRECCIONES_EXT_ERI3G_EN_RED_ERI3G.csv','wb')
+writer=csv.writer(f,delimiter=',')
+fila=['CONTROLLER DONDE SE DEFINE EXTERNA','EXTERNA','PARAMETRO','VALOR EN DEF EXTERNA','VALOR EN RED']
+writer.writerow(fila)
+
+
 #EXT 3G_ERI3G
-cursor.execute('''SELECT EXT_3G_ERI3G.ExternalUtranCell, EXT_3G_ERI3G.ControllerName, EXT_3G_ERI3G.ExternalUtranCellId, EXT_3G_ERI3G.ExternalUtranCellLac, EXT_3G_ERI3G.ExternalUtranCellMcc, EXT_3G_ERI3G.ExternalUtranCellMnc, EXT_3G_ERI3G.ExternalUtranCellRac, EXT_3G_ERI3G.ExternalUtranCellPrimaryScramblingCode,EXT_3G_ERI3G.Vendor,EXT_3G_ERI3G.ExternalUtranCellUarfcnDl
+cursor.execute('''SELECT EXT_3G_ERI3G.ExternalUtranCell, EXT_3G_ERI3G.TargetNode, EXT_3G_ERI3G.ExternalUtranCellId, EXT_3G_ERI3G.ExternalUtranCellLac, EXT_3G_ERI3G.ExternalUtranCellMcc, EXT_3G_ERI3G.ExternalUtranCellMnc, EXT_3G_ERI3G.ExternalUtranCellRac, EXT_3G_ERI3G.ExternalUtranCellPrimaryScramblingCode,EXT_3G_ERI3G.Vendor,EXT_3G_ERI3G.ExternalUtranCellUarfcnDl
 FROM EXT_3G_ERI3G;''')
 
 celdas=cursor.fetchall()
@@ -17,7 +24,7 @@ for celda in celdas:
         def_ext_valida=1
         try:
             externa_eri=celda[0]
-            rnc_ext = celda[1]
+            rnc_ext = ''
             ci_ext=int(celda[2])
             lac_ext=int(celda[3])
             mcc_ext=int(celda[4])
@@ -51,12 +58,12 @@ for celda in celdas:
 
         if externa_valida==1 and def_ext_valida==1:
 
-            if psc_ext-def_externa_eri_psc<>0: print 'PSC EN DEF EXTERNA: '+ externa_eri,str(psc_ext)+ '  PSC EN RED: '+ externa_eri, def_externa_eri_psc
-            if lac_ext - def_externa_eri_lac <> 0: print 'LAC EN DEF EXTERNA: ' + externa_eri,str(lac_ext) + '  LAC EN RED: ' + externa_eri, def_externa_eri_lac
-            if ci_ext - def_externa_eri_ci <> 0: print 'CI EN DEF EXTERNA: ' + externa_eri,str(ci_ext) + '  CI EN RED: ' + externa_eri, def_externa_eri_ci
-            if mcc_ext - def_externa_eri_mcc <> 0: print 'MCC EN DEF EXTERNA: ' + externa_eri,str(mcc_ext) + '  MCC EN RED: ' + externa_eri, def_externa_eri_mcc
-            if mnc_ext - def_externa_eri_mnc <> 0: print 'MNC EN DEF EXTERNA: ' + externa_eri,str(mnc_ext) + '  MNC EN RED: ' + externa_eri, def_externa_eri_mnc
-            if rnc_ext <> def_externa_eri_rnc: print 'RNC EN DEF EXTERNA: ' + externa_eri, str(rnc_ext) + '  RNC EN RED: ' + externa_eri, def_externa_eri_rnc
+            if psc_ext-def_externa_eri_psc<>0: writer.writerow([rnc_ext,str(externa_eri),'PSC',str(psc_ext),str(def_externa_eri_psc)])
+            if lac_ext - def_externa_eri_lac <> 0: writer.writerow([rnc_ext,str(externa_eri),'LAC',str(lac_ext),str(def_externa_eri_lac)])
+            if ci_ext - def_externa_eri_ci <> 0: writer.writerow([rnc_ext,str(externa_eri),'CI',str(ci_ext),str(def_externa_eri_ci)])
+            if mcc_ext - def_externa_eri_mcc <> 0: writer.writerow([rnc_ext,str(externa_eri),'MCC',str(mcc_ext),str(def_externa_eri_mcc)])
+            if mnc_ext - def_externa_eri_mnc <> 0: writer.writerow([rnc_ext,str(externa_eri),'MNC',str(mnc_ext),str(def_externa_eri_mnc)])
+            #if rnc_ext <> def_externa_eri_rnc: print writer.writerow([rnc_ext,str(externa_eri),'RNC',str(rnc_ext),str(def_externa_eri_rnc)])
 
 db.commit()
 db.close()
